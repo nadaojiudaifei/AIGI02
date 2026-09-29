@@ -1,0 +1,107 @@
+name: Install and verify AIGI02 research implementation
+on:
+  push:
+    paths:
+      - '.aigi02_delivery/READY.json'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: aigi02-install-main
+  cancel-in-progress: false
+jobs:
+  install-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      OMP_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      HF_HUB_OFFLINE: '1'
+      TRANSFORMERS_OFFLINE: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verify package and add source without changing upstream files
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import base64, hashlib, json, lzma, pathlib, subprocess
+          root = pathlib.Path('.')
+          receipt = root / '.aigi02_delivery/INSTALLED.json'
+          ready = json.loads((root / '.aigi02_delivery/READY.json').read_text())
+          if not receipt.exists():
+              encoded = ''.join((root / '.aigi02_delivery' / name).read_text().strip() for name in ready['parts'])
+              raw = base64.b64decode(encoded, validate=True)
+              assert hashlib.sha256(raw).hexdigest() == ready['sha256'], 'Package digest mismatch'
+              decoder = lzma.LZMADecompressor(memlimit=268435456)
+              plain = decoder.decompress(raw, max_length=4194304)
+              assert decoder.eof and not decoder.unused_data, 'Invalid or oversized package'
+              contents = json.loads(plain)
+              assert len(contents) == ready['files']
+              upstream = json.loads(contents['aigi02_docs/upstream_sha256.json'])
+              for name, digest in upstream.items():
+                  assert hashlib.sha256((root / name).read_bytes()).hexdigest() == digest, 'Modified upstream: ' + name
+              allowed = ('aigi02/', 'aigi02_configs/', 'aigi02_docs/', 'aigi02_scripts/', 'aigi02_tests/', 'requirements-aigi02')
+              exact = {'README_AIGI02.md', 'NOTICE_AIGI02.md', '.gitignore'}
+              for name, content in contents.items():
+                  path = pathlib.PurePosixPath(name)
+                  assert not path.is_absolute() and '..' not in path.parts and '\\' not in name
+                  assert name.startswith(allowed) or name in exact, 'Unexpected path: ' + name
+                  assert name not in upstream
+                  target = root / name
+                  expected = content.encode('utf-8')
+                  assert not target.exists() or target.read_bytes() == expected, 'Refusing overwrite: ' + name
+              for name, content in contents.items():
+                  target = root / name
+                  target.parent.mkdir(parents=True, exist_ok=True)
+                  target.write_bytes(content.encode('utf-8'))
+                  if name.endswith('.sh'): target.chmod(0o755)
+              receipt.write_text(json.dumps({'sha256':ready['sha256'], 'files':len(contents), 'upstream':'cd43f5d9761fb34f5224622145629d3ff2b89ca1'}, indent=2)+'\n')
+              subprocess.run(['git','add','--']+list(contents)+[str(receipt)],check=True)
+              subprocess.run(['git','rm','--']+[str(root/'.aigi02_delivery'/n) for n in ready['parts']],check=True)
+          else:
+              assert json.loads(receipt.read_text())['sha256'] == ready['sha256']
+          PY
+          git config user.name 'AIGI02 delivery'
+          git config user.email '333656099+nadaojiudaifei@users.noreply.github.com'
+          if ! git diff --cached --quiet; then
+            git commit -m 'Add Idea 1 and Idea 2 training, entropy coding, experiments, tests and documentation'
+            git push origin HEAD:main
+          fi
+          git rev-parse HEAD > /tmp/aigi02-source-commit.txt
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install CPU production dependencies without model downloads
+        run: |
+          python -m pip install --upgrade pip wheel setuptools==70.3.0
+          python -m pip install torch==2.8.0 torchvision==0.23.0 --index-url https://download.pytorch.org/whl/cpu
+          python -m pip install -r requirements-aigi02.txt
+          python -m pip check
+          python -m pip freeze > /tmp/aigi02-dependency-freeze.txt
+      - name: Run tests including real CompressAI and SANA interfaces
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pytest aigi02_tests -q -rs --junitxml=/tmp/aigi02-junit.xml 2>&1 | tee /tmp/aigi02-tests.txt
+          python -m aigi02 verify-upstream | tee /tmp/aigi02-upstream-check.txt
+      - name: Archive complete committed source
+        if: always()
+        run: |
+          git archive --format=zip --prefix=AIGI02/ --output=/tmp/AIGI02_full_project.zip HEAD
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: AIGI02-source-and-validation
+          path: |
+            /tmp/AIGI02_full_project.zip
+            /tmp/aigi02-source-commit.txt
+            /tmp/aigi02-dependency-freeze.txt
+            /tmp/aigi02-tests.txt
+            /tmp/aigi02-junit.xml
+            /tmp/aigi02-upstream-check.txt
+          if-no-files-found: error
+          retention-days: 14
