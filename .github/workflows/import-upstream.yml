@@ -1,0 +1,51 @@
+name: Import pinned DiT-IC upstream
+on:
+  push:
+    paths:
+      - '.github/workflows/import-upstream.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Import original files without modification
+        shell: bash
+        run: |
+          set -euo pipefail
+          PIN=cd43f5d9761fb34f5224622145629d3ff2b89ca1
+          git remote add ditic https://github.com/Eric-qi/DiT-IC.git
+          git fetch --no-tags ditic "$PIN"
+          test "$(git rev-parse FETCH_HEAD)" = "$PIN"
+          python - <<'PY'
+          import pathlib, subprocess
+          pin = 'cd43f5d9761fb34f5224622145629d3ff2b89ca1'
+          names = subprocess.check_output(['git','ls-tree','-rz','--name-only',pin]).split(b'\0')
+          for raw in names:
+              if not raw:
+                  continue
+              name = raw.decode('utf-8')
+              path = pathlib.Path(name)
+              if path.exists():
+                  expected = subprocess.check_output(['git','show',pin+':'+name])
+                  if path.read_bytes() != expected:
+                      raise SystemExit('Refusing to overwrite differing file: '+name)
+          PY
+          git checkout "$PIN" -- .
+          git config user.name 'AIGI02 import'
+          git config user.email '333656099+nadaojiudaifei@users.noreply.github.com'
+          if ! git diff --cached --quiet; then
+            git commit -m "Import unmodified DiT-IC at cd43f5d"
+            git push origin HEAD:main
+          fi
+          mkdir -p /tmp/aigi02-upstream
+          git archive --format=zip --output=/tmp/aigi02-upstream/dit_ic_upstream.zip "$PIN"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dit-ic-pinned-source
+          path: /tmp/aigi02-upstream/dit_ic_upstream.zip
+          retention-days: 7
