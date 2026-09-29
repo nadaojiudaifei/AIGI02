@@ -1,5 +1,16 @@
 # 验证报告与已知限制
 
+## 远程正式依赖验证：已完成
+
+GitHub Actions 在 Python 3.12、PyTorch 2.8.0 CPU、CompressAI 1.2.8、Diffusers 0.35.2 的正式依赖环境中执行了完整测试，实际输出为 **57 passed in 8.71s，0 failed，0 skipped**。`pip check`、原版 DiT-IC/ELIC 架构导入、原版文件校验也全部通过。74 个原版文件经 SHA-256 校验，修改数为 0。
+
+已测试源码提交：`b09ef06df38f4cf480d82cb7fe305004900ce184`。
+安装与测试 run：<https://github.com/nadaojiudaifei/AIGI02/actions/runs/36521214910>。
+后续持续集成 run：<https://github.com/nadaojiudaifei/AIGI02/actions/runs/36521362165>，同样成功。
+机器可读记录见 [CI_REPORT.json](CI_REPORT.json)。首个 run 的 `AIGI02-source-and-validation` artifact 包含原始测试日志、JUnit、依赖冻结表、源码 ZIP 和上游文件校验结果。
+
+本次远程测试包括真正的 CompressAI rANS 编解码和真正的 Diffusers SANA 小结构前后向接口测试；后者使用随机初始化的小结构，不是下载预训练 SANA 后完成图像压缩训练。**CPU 正式依赖测试通过，不等于预训练大模型 GPU 验收或论文结果复现。**
+
 ## 本地实际执行
 
 环境：CPU-only PyTorch 2.10.0，未创建 Conda 环境，未安装或下载 SANA/ELIC 预训练权重。实际命令及输出保存在本目录的 `LOCAL_TESTS.txt`、`DDP_TEST.txt`、`SMOKE_REPORT.json`。
@@ -13,7 +24,7 @@ maps/codec/field_pretrain/flow_teacher/distill/gan 六阶段串联；
 
 独立机制 smoke：两张 32×32 程序生成测试图、两步训练、实际二进制往返、新 Python 进程单独解码，PNG 字节一致。里面的 PSNR、bpp、耗时只是对该测试网络的测量，不是正式 codec 基准。双进程 CPU Gloo DDP 两步训练也已执行并保存日志。
 
-跳过项为真实 CompressAI rANS 接口与真实 Diffusers SANA 小结构接口测试，因为本地没有安装这两个依赖。它们不是“测试通过”。`test_production_interfaces.py` 可以在安装正式依赖后运行，不需要下载预训练权重。仓库 CI 的状态必须以 GitHub 对应 run 的实际结果为准；不能把工作流文件存在视为已经通过。
+本地跳过项为真实 CompressAI rANS 接口与真实 Diffusers SANA 小结构接口测试，因为本地没有安装这两个依赖。这份历史本地记录保持不变；两项已在上述远程正式依赖环境独立执行并通过，不能把本地 skipped 改写成 passed。
 
 ## 仍需在用户 GPU 服务器完成
 
