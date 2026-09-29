@@ -1,0 +1,55 @@
+{
+  "repository": "nadaojiudaifei/AIGI02",
+  "validated_source_commit": "b09ef06df38f4cf480d82cb7fe305004900ce184",
+  "upstream_commit": "cd43f5d9761fb34f5224622145629d3ff2b89ca1",
+  "completed_at_utc": "2026-09-29T04:22:56Z",
+  "environment": {
+    "runner": "ubuntu-latest",
+    "python": "3.12",
+    "torch": "2.8.0+cpu",
+    "torchvision": "0.23.0+cpu",
+    "compressai": "1.2.8",
+    "diffusers": "0.35.2",
+    "transformers": "4.56.2",
+    "setuptools": "69.5.1",
+    "pip_check": "passed",
+    "pretrained_models_downloaded": false,
+    "cuda_tested": false
+  },
+  "primary_run": {
+    "id": 36521214910,
+    "job_id": 109254272703,
+    "url": "https://github.com/nadaojiudaifei/AIGI02/actions/runs/36521214910",
+    "status": "completed",
+    "conclusion": "success",
+    "artifact_id": 11013102008,
+    "artifact_name": "AIGI02-source-and-validation"
+  },
+  "continuous_ci_run": {
+    "id": 36521362165,
+    "commit": "45b9fe1f1989db67d897f75204931f030f11f1e9",
+    "url": "https://github.com/nadaojiudaifei/AIGI02/actions/runs/36521362165",
+    "status": "completed",
+    "conclusion": "success"
+  },
+  "pytest": {
+    "passed": 57,
+    "failed": 0,
+    "skipped": 0,
+    "seconds": 8.71,
+    "raw_summary": "57 passed in 8.71s",
+    "includes_actual_compressai_rans_roundtrip": true,
+    "includes_actual_small_sana_forward_backward": true
+  },
+  "original_architecture_imports": "passed",
+  "upstream_sha256_check": {
+    "verified_files": 74,
+    "modified": 0
+  },
+  "limits": [
+    "The real SANA interface test uses a small randomly initialized structure, not pretrained SANA reconstruction.",
+    "No full pretrained GPU acceptance, converged research training, or new-method benchmark curves were executed.",
+    "No trained new-method checkpoints or claimed improvements over DiT-IC are included.",
+    "Historical local results remain 55 passed and 2 skipped; the remote environment independently ran all 57 tests."
+  ]
+}
