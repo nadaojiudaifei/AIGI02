@@ -1,0 +1,11 @@
+# Added AIGI02 artifacts. Original tracked source remains untouched.
+aigi02_runs/
+aigi02_results/
+aigi02_data/
+aigi02_assets/
+.pytest_cache/
+**/__pycache__/
+*.tmp
+*.download
+.env
+.env.*

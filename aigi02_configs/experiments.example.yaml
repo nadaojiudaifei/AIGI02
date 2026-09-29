@@ -1,0 +1,85 @@
+output: aigi02_results/main
+device: cuda
+distribution: true
+metrics:
+- psnr
+- lpips
+- dists
+- ms_ssim
+- clipiqa
+- musiq
+- niqe
+datasets:
+  kodak: aigi02_data/kodak/manifest.jsonl
+  div2k: aigi02_data/div2k/manifest.jsonl
+  clic2020: aigi02_data/clic2020/manifest.jsonl
+  aigi_holdout: aigi02_data/splits/test.jsonl
+models:
+  ditic_q1:
+    kind: baseline
+    config: configs/inference_merge.yaml
+    checkpoint: aigi02_assets/ditic/SELECT_Q1_MERGED.pt
+    sana: aigi02_assets/sana
+  idea1_op1:
+    kind: aigi02
+    checkpoint: aigi02_runs/idea1_op1/gan/last.pt
+    betas:
+    - 1.0
+    prompt_mode: included
+  idea2_op1:
+    kind: aigi02
+    checkpoint: aigi02_runs/idea2_op1/gan/last.pt
+    betas:
+    - 1.0
+    prompt_mode: included
+  ditic_q2:
+    kind: baseline
+    config: configs/inference_merge.yaml
+    checkpoint: aigi02_assets/ditic/SELECT_Q2_MERGED.pt
+    sana: aigi02_assets/sana
+  idea1_op2:
+    kind: aigi02
+    checkpoint: aigi02_runs/idea1_op2/gan/last.pt
+    betas:
+    - 1.0
+    prompt_mode: included
+  idea2_op2:
+    kind: aigi02
+    checkpoint: aigi02_runs/idea2_op2/gan/last.pt
+    betas:
+    - 1.0
+    prompt_mode: included
+  ditic_q3:
+    kind: baseline
+    config: configs/inference_merge.yaml
+    checkpoint: aigi02_assets/ditic/SELECT_Q3_MERGED.pt
+    sana: aigi02_assets/sana
+  idea1_op3:
+    kind: aigi02
+    checkpoint: aigi02_runs/idea1_op3/gan/last.pt
+    betas:
+    - 1.0
+    prompt_mode: included
+  idea2_op3:
+    kind: aigi02
+    checkpoint: aigi02_runs/idea2_op3/gan/last.pt
+    betas:
+    - 1.0
+    prompt_mode: included
+  ditic_q4:
+    kind: baseline
+    config: configs/inference_merge.yaml
+    checkpoint: aigi02_assets/ditic/SELECT_Q4_MERGED.pt
+    sana: aigi02_assets/sana
+  idea1_op4:
+    kind: aigi02
+    checkpoint: aigi02_runs/idea1_op4/gan/last.pt
+    betas:
+    - 1.0
+    prompt_mode: included
+  idea2_op4:
+    kind: aigi02
+    checkpoint: aigi02_runs/idea2_op4/gan/last.pt
+    betas:
+    - 1.0
+    prompt_mode: included

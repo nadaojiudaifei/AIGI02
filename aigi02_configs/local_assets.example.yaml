@@ -1,0 +1,8 @@
+assets:
+  sana: /srv/aigi02/models/sana
+  text: /srv/aigi02/models/sana
+  ditic: null
+  elic: null
+  discriminator: /srv/aigi02/models/dino
+  local_files_only: true
+  revision: null

@@ -1,0 +1,32 @@
+{
+  "backend": "tiny-reference-arithmetic-test-only",
+  "train_steps": 2,
+  "images": 2,
+  "independent_decode_png_bit_exact": true,
+  "measured_metrics": {
+    "bpp_excluding_prompt_payload": 1.046875,
+    "bpp_prompt_payload": 0.2734375,
+    "bpp_total": 1.3203125,
+    "bpp_visual_payload": 0.546875,
+    "bytes_header_and_integrity": 64.0,
+    "bytes_prompt": 35.0,
+    "bytes_total": 169.0,
+    "bytes_y": 52.0,
+    "bytes_z": 18.0,
+    "decode_ms": 11.166624500106082,
+    "encode_ms": 14.759481999931268,
+    "height": 32.0,
+    "peak_cuda_bytes": 0.0,
+    "psnr": 10.487847721885139,
+    "width": 32.0,
+    "images": 2,
+    "metric_protocol": "PNG-roundtrip; exact manifest ID pairing",
+    "bpp_total_pixel_weighted": 1.3203125,
+    "bpp_total_image_mean": 1.3203125
+  },
+  "not_validated": [
+    "pretrained SANA GPU training",
+    "original DiT-IC reproduction",
+    "rate-distortion improvements"
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "sha256": "b131739c738773def357970653c61014009721cf654bd45d86e618274a198173",
+  "files": 84,
+  "release_correction": "setuptools 69.5.1",
+  "upstream": "cd43f5d9761fb34f5224622145629d3ff2b89ca1"
+}

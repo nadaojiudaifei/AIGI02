@@ -1,0 +1,10 @@
+[Gloo] Rank 0 is connected to 1 peer ranks. Expected number of connected peer ranks is : 1
+[Gloo] Rank 1 is connected to 1 peer ranks. Expected number of connected peer ranks is : 1
+{"step": 1, "elapsed_s": 0.05087877200003277, "grad_norm": 127.72022247314453, "lr": 5.500000000000001e-05, "bpp_estimate": 0.04343521222472191, "text_bpp": 0.2734375, "mse": 0.40526673197746277, "align": 0.9971036911010742, "importance_head": 0.2522042393684387, "cell": 0.0, "waterfill": 0.0009606469538994133, "loss": 104.19013214111328}
+{"step": 2, "elapsed_s": 0.1144112709998808, "grad_norm": 136.2531280517578, "lr": 1e-05, "bpp_estimate": 0.04343004897236824, "text_bpp": 0.2734375, "mse": 0.42742830514907837, "align": 1.0293526649475098, "importance_head": 0.2762414515018463, "cell": 0.0, "waterfill": 0.0009732593898661435, "loss": 109.86907196044922}
+{
+  "checkpoint": "/mnt/data/aigi02_ddp_smoke/last.pt"
+}
+{
+  "checkpoint": "/mnt/data/aigi02_ddp_smoke/last.pt"
+}

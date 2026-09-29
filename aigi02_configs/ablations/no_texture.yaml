@@ -1,0 +1,81 @@
+backend: sana
+method: idea2
+seed: 2026
+device: cuda
+assets:
+  sana: aigi02_assets/sana
+  ditic: aigi02_assets/ditic/SELECT_MERGED_CHECKPOINT.pt
+  elic: null
+  text: null
+  local_files_only: true
+  revision: null
+  discriminator: aigi02_assets/dino
+model:
+  channels: 320
+  latent_channels: 32
+  text_dim: 2304
+  pad_multiple: 256
+  lora_rank: 16
+  vae_lora_rank: 8
+  max_tokens: 77
+  train_vae_decoder: true
+features:
+  token_weights: true
+  texture: false
+  importance: true
+  conditional_score: true
+  correction: true
+  prompt_entropy: true
+  prompt_decoder: true
+  field: true
+  semantic_bias: true
+  field_residual: true
+  spatial_adaln: true
+  waterfill: true
+  cell: true
+  distillation: true
+  realism: true
+rate:
+  lambda_rd: 256.0
+  beta: 1.0
+  beta_max: 2.0
+  prompt_mode: included
+loss:
+  perceptual: 1.0
+  alignment: 0.1
+  cell: 0.05
+  waterfill: 0.05
+  importance_head: 0.1
+  map: 1.0
+  distill: 1.0
+  realism: 0.01
+teacher:
+  log_snr_min: -6.0
+  log_snr_max: 4.0
+  nodes: 8
+  noise_samples: 2
+  steps: 4
+  drop_text: 0.1
+  drop_latent: 0.1
+train:
+  stage: codec
+  manifest: aigi02_data/splits/train.maps.jsonl
+  val_manifest: aigi02_data/splits/validation.jsonl
+  val_max_images: 16
+  output: aigi02_runs/ablations/no_texture
+  crop: 256
+  batch_size: 1
+  steps: 50000
+  lr: 0.0001
+  aux_lr: 0.001
+  num_workers: 4
+  accumulation: 1
+  save_every: 1000
+  log_every: 20
+  clip_grad: 1.0
+  amp: true
+  resume: null
+  init: null
+  teacher_checkpoint: null
+  trainable: all
+  map_source: distilled

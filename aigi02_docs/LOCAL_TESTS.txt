@@ -1,0 +1,5 @@
+................................ss.......................                [100%]
+=========================== short test summary info ============================
+SKIPPED [1] aigi02_tests/test_production_interfaces.py:11: could not import 'compressai': No module named 'compressai'
+SKIPPED [1] aigi02_tests/test_production_interfaces.py:31: could not import 'diffusers': No module named 'diffusers'
+55 passed, 2 skipped in 3.25s

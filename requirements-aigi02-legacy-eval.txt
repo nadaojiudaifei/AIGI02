@@ -1,0 +1,15 @@
+# Original CLIP still imports pkg_resources.packaging.
+setuptools==69.5.1
+# Optional separate evaluation environment for upstream PyIQA fidelity.
+# Install matched torch/torchvision separately. Do NOT combine with the main file.
+numpy==1.26.4
+Pillow==11.3.0
+PyYAML==6.0.3
+pyiqa==0.1.14.1
+transformers==4.37.2
+accelerate==1.1.0
+lpips==0.1.4
+torchmetrics==1.8.2
+torch-fidelity==0.3.0
+opencv-python==4.11.0.86
+opencv-python-headless==4.11.0.86

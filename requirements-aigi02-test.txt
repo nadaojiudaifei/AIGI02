@@ -1,0 +1,5 @@
+# CPU mechanics tests only; not a production installation.
+numpy==1.26.4
+Pillow==11.3.0
+PyYAML==6.0.3
+pytest>=8,<10
