@@ -1,0 +1,37 @@
+name: Package complete AIGI02 source
+on:
+  push:
+    paths:
+      - '.github/workflows/aigi02-source-package.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify unchanged original files and archive complete source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, json, pathlib
+          manifest = json.loads(pathlib.Path('aigi02_docs/upstream_sha256.json').read_text())
+          for name, digest in manifest.items():
+              assert hashlib.sha256(pathlib.Path(name).read_bytes()).hexdigest() == digest, name
+          print('Unmodified original files:', len(manifest))
+          PY
+          git archive --format=zip --prefix=AIGI02/ --output=/tmp/AIGI02_full_project.zip HEAD
+          git rev-parse HEAD > /tmp/source-commit.txt
+          cd /tmp
+          sha256sum AIGI02_full_project.zip > AIGI02_full_project.sha256
+      - uses: actions/upload-artifact@v4
+        with:
+          name: AIGI02-complete-source
+          path: |
+            /tmp/AIGI02_full_project.zip
+            /tmp/AIGI02_full_project.sha256
+            /tmp/source-commit.txt
+          retention-days: 14
